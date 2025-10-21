@@ -25,4 +25,11 @@ model User {
   status    Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  role      Role     @default(STUDENT)
+}
+
+enum Role {
+  ADMIN
+  STUDENT
+  TEACHER
 }
