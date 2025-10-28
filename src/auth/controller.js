@@ -1,13 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { prisma } = require("../../utils/pisma");
+const { prisma } = require("../../utils/prisma");
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../../utils/jwt");
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  console.log("Login attempt for email:", email);
-
   try {
     const user = await prisma.user.findFirst({
       where: {
@@ -17,6 +15,7 @@ const loginUser = async (req, res) => {
       },
       select: {
         id: true,
+        name: true,
         email: true,
         role: true,
         password: true,

@@ -13,6 +13,7 @@ const PORT = process.env.PORT || 3000;  // fallback port
 // Import auth routes
 const userRoutes = require("./src/user/route");
 const authRoutes = require("./src/Auth/route");
+const projectRoutes = require("./src/project/route");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,6 +21,8 @@ app.use(express.urlencoded({ extended: true }));
 // Mount Auth routes
 app.use("/v1/api/user", userRoutes);
 app.use("/v1/api/auth", authRoutes);
+app.use("/v1/api/project", projectRoutes);
+
 // Test route
 app.get("/", (req, res) => {
   res.send("Hello World!");

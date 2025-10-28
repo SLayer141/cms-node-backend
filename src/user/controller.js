@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { prisma } = require("../../utils/pisma");
+const { prisma } = require("../../utils/prisma");
 const bcrypt = require("bcryptjs");
 
 // Register User

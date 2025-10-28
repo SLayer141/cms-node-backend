@@ -1,13 +1,9 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  //output   = "../src/generated/prisma"
-}
+  }
 
 datasource db {
   provider = "postgresql"
@@ -16,20 +12,58 @@ datasource db {
 
 model User {
   id        Int      @id @default(autoincrement())
-  email     String
+  email     String   
   password  String
   name      String?
-  userName  String
-  //posts      Post[]
+  userName  String   
   isActive  Boolean  @default(false)
   status    Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   role      Role     @default(STUDENT)
+  
+  // Self-referencing relations for audit
+  createdBy     Int?
+  createdByUser User? @relation("UserCreatedBy", fields: [createdBy], references: [id])
+  updatedBy     Int?
+  updatedByUser User? @relation("UserUpdatedBy", fields: [updatedBy], references: [id])
+  
+  // Relations
+  projects Project[]
+  
+  // Reverse relations for audit
+  usersCreated User[] @relation("UserCreatedBy")
+  usersUpdated User[] @relation("UserUpdatedBy")
+  
+  projectsCreated Project[] @relation("ProjectCreatedBy")
+  projectsUpdated Project[] @relation("ProjectUpdatedBy")
+
+  @@map("users")
 }
 
 enum Role {
   ADMIN
   STUDENT
   TEACHER
+}
+
+model Project {
+  id        Int      @id @default(autoincrement())
+  title     String
+  link      String?
+  
+  // User relation with cascade delete
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  
+  // Audit fields with proper relations
+  createdBy     Int?
+  createdByUser User? @relation("ProjectCreatedBy", fields: [createdBy], references: [id])
+  updatedBy     Int?
+  updatedByUser User? @relation("ProjectUpdatedBy", fields: [updatedBy], references: [id])
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("projects")
 }
